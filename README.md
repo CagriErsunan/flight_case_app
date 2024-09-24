@@ -1,3 +1,8 @@
+/server kısmına cd'leyerek "nodemon start" yazarak backend serverını, ana klasöre cd'leyerek "npm start" yazarak React serverını çalıştırabilirsiniz.
+API anahtarları bana aittir fakat projede gizlemedim isterseniz kendi auth parametrelerinizle de kullanabilirsiniz. 
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
