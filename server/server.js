@@ -3,41 +3,19 @@ import cors from "cors";
 import axios from "axios";
 import { MongoClient } from "mongodb";
 
+
 const corsOptions = {
   origin: "http://localhost:3000",
   credentials: true,
 };
 
-const myuri=""
 
 const app = express();
 const port = 8080;
 
 
-const client = new MongoClient(uri); // Create client - Think of it as a live connection
-await client.connect(); // Connect client to server
-const database = client.db("music"); // Access the database on server
-let soundsCollection = null;
-
-
-
-let datas = await database.listCollections({}, { nameOnly: true }).toArray();
-datas.filter((collectionName) => {
-  return collectionName === "datas";
-});
-
-if (datas.length == 0 ) {
-  soundsCollection = await database.createCollection("datas");
-
-
 app.use(cors(corsOptions));
 
-app.post('/savedata', async (req, res) => {
-  const newData = new Data(req.body);
-  console.log(req.body);
-  await newData.save();
-  res.status(201).send(newData);
-});
 
 app.get("/flights/sort=:sorT&start=:start&end=:end&to=:to", async (req, res) => {
   let route;

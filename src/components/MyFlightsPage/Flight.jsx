@@ -2,7 +2,7 @@ import React from 'react'
 
 const Flight = () => {
   return (
-    <div></div>
+    <div></div>)
 }
 
 export default Flight
