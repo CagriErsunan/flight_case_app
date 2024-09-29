@@ -1,4 +1,4 @@
-import { Button, Divider, Typography } from '@mui/material'
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Slide, Typography } from '@mui/material'
 import { Box, Stack } from '@mui/system'
 import React, { useEffect, useState } from 'react'
 
@@ -8,21 +8,34 @@ import arrivalMiniIcon from '../assets/AscendingBlackLogo.svg';
 import planeMiniIcon from '../assets/PlanePurpleLogo.svg';
 import axios from 'axios';
 
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 
-
-
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const FlightToBook = ({flight, destinations, startDate, endDate}) => {
 
-  const startDateToFormat = JSON.stringify(startDate).substring(0, 11);
-  //console.log(startDateToFormat);
-
-  const endDateToFormat = JSON.stringify(endDate).substring(0, 11);
-  //console.log(startDateToFormat);
 
   const [location, setLocation] = useState([]);
   const [arrivalTime, setArrivalTime] = useState("Bilinmiyor");
   const [airline, setAirline] = useState("");
+
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const [alertForSaving, setalertForSaving] = useState("Hay aksi! Rezervasyonunuz alınamadı. Lütfen tekrar deneyiniz.");
 
 
   useEffect(() => {
@@ -47,20 +60,7 @@ const FlightToBook = ({flight, destinations, startDate, endDate}) => {
     }
   }, [destinations, flight.estimatedLandingTime]);
   console.log(typeof(flight.scheduleDate));
-  const handleSave = async () => {
-    try {
-      await axios.post('http://localhost:8080/savedata', {
-        date: flight.scheduleDate,
-        code: flight.flightName,
-        number: flight.flightNumber,
-        destination: flight.route.destinations[0],
-      });
-      alert('Flight data saved successfully!');
-    } catch (error) {
-      console.error('Error saving flight data:', error);
-      alert('Failed to save flight data.');
-    }
-  };
+
 
   useEffect(() => {
     const fetchAirlineData = async () => {
@@ -81,8 +81,20 @@ const FlightToBook = ({flight, destinations, startDate, endDate}) => {
   }, []);
 
 
-  // console.log(flight);
-  //console.log(location);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:8080/saveflights", flight);
+      console.log(response.data);
+      setalertForSaving("Rezervasyonunuz başarıyla yapıldı.")
+      handleOpen();
+    } catch (error) {
+      console.error("Error saving flight data:", error);
+    }
+  };
+
+
   return (
     <Stack sx={{}} >
       <Stack  gap={2} sx={{borderRadius: '15px', background: '#FFF', pt:1, boxShadow:'0px 5px 5.8px 0px   rgba(0, 0, 0, 0.20)'}}>
@@ -90,10 +102,10 @@ const FlightToBook = ({flight, destinations, startDate, endDate}) => {
         <Stack direction={'row'} gap={10} alignItems={'center'} justifyContent={'center'} mr={3} pl={3} mt={1}>
           <Box textAlign={'center'}>
             <Stack direction={'row'} alignItems={'center'} gap={1}>
-              <div className='IconContainer'> <img alt='Departure' src={departureMiniIcon}></img> </div>
-              <Typography variant='body2' color='rgba(0, 0, 0, 0.70)' fontSize={'14px'} sx={{fontWeight:'400'}}>Departure</Typography>
+            <div className='IconContainer'> <img alt='Departure' src={departureMiniIcon}></img> </div>
+            <Typography variant='body2' color='rgba(0, 0, 0, 0.70)' fontSize={'14px'} sx={{fontWeight:'400'}}>Arrival</Typography>
             </Stack>
-            <Typography sx={{fontWeight:'600'}}>{flight.scheduleTime.substring(0,5)}</Typography>
+            <Typography sx={{fontWeight:'600'}}>{arrivalTime}</Typography>
           </Box>
           <div className='IconContainer'><img alt='Line' src={dividerIcon}></img></div>
           <Stack gap={1} alignItems={'center'} justifyContent={'center'}>
@@ -107,9 +119,9 @@ const FlightToBook = ({flight, destinations, startDate, endDate}) => {
           <Box textAlign={'center'}>
             <Stack direction={'row'} alignItems={'center'} gap={1}>
             <div className='IconContainer'> <img alt='Departure' src={arrivalMiniIcon}></img> </div>
-            <Typography variant='body2' color='rgba(0, 0, 0, 0.70)' fontSize={'14px'} sx={{fontWeight:'400'}}>Arrival</Typography>
+              <Typography variant='body2' color='rgba(0, 0, 0, 0.70)' fontSize={'14px'} sx={{fontWeight:'400'}}>Departure</Typography>
             </Stack>
-            <Typography sx={{fontWeight:'600'}}>{arrivalTime}</Typography>
+            <Typography sx={{fontWeight:'600'}}>{flight.scheduleTime.substring(0,5)}</Typography>
           </Box>
         </Stack>
 
@@ -117,9 +129,28 @@ const FlightToBook = ({flight, destinations, startDate, endDate}) => {
           <Button  sx={{borderRadius: '0px 10px ', background: '#DCD6E5', width:'fit-content', alignItems:'center', justifyContent:'center', width:'170px'}} >
             <Typography   color="#4A1B96" sx={{m:0.5, fontWeight:'600 !important', fontSize:'16px', textDecorationLine: 'underline', textTransform: 'none'}}>Check the details</Typography>
           </Button>
-          <Button onClick={handleSave} sx={{borderRadius: '10px 0px', background: '#4A1B96', alignItems:'center', justifyContent:'center', width:'170px'}} >
+
+          <Button onClick={handleSubmit} sx={{borderRadius: '10px 0px', background: '#4A1B96', alignItems:'center', justifyContent:'center', width:'170px'}} >
             <Typography color="#FFF" sx={{textTransform: 'none', fontWeight:'700 !important', fontSize:'18px', textAlign:'center'}}>Book Flight</Typography>
           </Button>
+          <Dialog
+              borderRadius={'15px'}
+              open={open}
+              TransitionComponent={Transition}
+              keepMounted
+              onClose={handleClose}
+              aria-describedby="alert-dialog-slide-description"
+            >
+              <DialogTitle>{"PLANET SCAPE"}</DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-slide-description">
+                  {alertForSaving}
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button color='#4A1B96' onClick={handleClose}>Tamam</Button>
+              </DialogActions>
+            </Dialog>
         </Stack>
       </Stack>
     </Stack>

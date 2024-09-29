@@ -7,21 +7,17 @@ import myAvatar from '../assets/ÇağrıProfilePhoto.jpg';
 import tagIcon from '../assets/TagLogo.svg';
 import earthIcon from '../assets/EarthLogo.svg';
 import MyFlights from './MyFlightsPage/MyFlights';
+import { Navigate, useNavigate } from 'react-router';
 
 
 const username = "Çağrı Ersunan";
 
-const theme = createTheme({
-  typography:{
-    fontFamily: ['Anuphan'].join(','),
-    button: {
-    textTransform: 'none'
-    }
-  }
-});
-
 const NavBarHome = () => {
+  const navigate = useNavigate();
 
+  const handleClick = () => {
+    navigate('/my_flights');
+  }
 
 
   return (
@@ -30,17 +26,23 @@ const NavBarHome = () => {
           <Box display='flex' flexDirection='row' gap={1} alignItems='center'>
             <div className='logoContainer' id='HomeLogo'><img src={HomeIcon} alt='Main Icon'></img></div>
             <Typography variant='h4' color='inherit' fontWeight='medium' textAlign='center' component="div" sx={{ml:0.5}}>
-            PLANET SCAPE
+            PLANE SCAPE
             </Typography>
           </Box>
 
           <Stack direction={'row'} justifyContent={'center'} alignItems={'center'} gap={1.5}>
+
+            <Button onClick={handleClick} sx={{gap:0.5}}>
+              <Typography className='MedFont' variant="body1" color="initial">MY FLIGHTS</Typography>
+            </Button>
+
             <Stack direction={'row'} justifyContent={'center'} alignItems={'center'} gap={1}>
               <Button sx={{gap:0.5}}>
                 <div className='logoContainer'><img src={tagIcon} alt='Tag Icon' ></img></div>
                 <Typography className='MedFont' variant="body1" color="initial">Deals</Typography>
               </Button>
             </Stack>
+
             <Stack>
               <Button sx={{gap:0.5}}>
               <div className='logoContainer'><img src={earthIcon} alt='Tag Icon' ></img></div>

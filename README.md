@@ -1,6 +1,10 @@
 /server kısmına cd'leyerek "nodemon start" yazarak backend serverını, ana klasöre cd'leyerek "npm start" yazarak React serverını çalıştırabilirsiniz.
 
-API anahtarları bana aittir fakat projede gizlemedim isterseniz kendi auth parametrelerinizle de kullanabilirsiniz. 
+MY FLIGHTS butonuna tıklayarak route ile uçuşlarım sayfasına yönlendirilebilirsiniz.
+
+server/server.js dosyasında uri değişkenine mongoDB uri'ınızı girmeniz gerekmekte. Güvenlik sebebiyle kendi uri'yımı paylaşamam.
+
+API anahtarları bana aittir fakat projede gizlemedim isterseniz kendi auth parametrelerinizle de kullanabilirsiniz.
 
 Projede Material UI kütüphanesini kullandım.
 

@@ -39,6 +39,17 @@ const Home = () => {
   const [dates, setDates] = useState({ startDate: null, endDate: null });
 
 
+
+  const flightData = {
+    estimatedLandingTime:'',
+    scheduleDate:'',
+    prefixIATA:'',
+    flightName: "",
+    flightNumber: ""
+  }
+
+
+
   const today = new Date().toISOString();
   const DefDate = today.substring(0, 10);
 
@@ -88,11 +99,12 @@ const Home = () => {
   console.log(yon, strt, end, sort);
   //console.log(flights[0]); //Test amaçlı
 
+
+
   return (
     <ThemeProvider theme={theme}>
     <Stack justifyContent={'center'} alignItems={'center'}  gap={2}>
       <NavBarHome />
-
       <Stack  direction="row" gap={8} width={'100%'}>
         <Stack alignItems={'flex-start'} justifyContent={'flex-start'}  gap={8} >
           <ShowFlights onFlightsFetched={handleFlightsFetched} FlightDirection={yonBilgisi} onDatesChange={handleDatesChange}  />

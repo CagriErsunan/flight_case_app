@@ -3,6 +3,10 @@ body{
   width: fit-content;
   max-width: 1440px;
   margin: auto;
+
+}
+.flightsPage *{
+  font-family: "Afacad", system-ui;
 }
 
 .logoContainer{

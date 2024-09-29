@@ -1,20 +1,58 @@
 import express from "express";
 import cors from "cors";
 import axios from "axios";
-import { MongoClient } from "mongodb";
+import { MongoClient, ServerApiVersion } from "mongodb";
 
+
+const uri = "mongodb+srv://cagriersunan:2001Cagers@cluster0.xdpfz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 const corsOptions = {
   origin: "http://localhost:3000",
   credentials: true,
 };
 
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
 
 const app = express();
 const port = 8080;
 
+const dbName = "flights";
+const collectionName = "flightData";
 
 app.use(cors(corsOptions));
+app.use(express.json());
+
+async function connectToMongoDB() {
+  try {
+    await client.connect();
+    console.log("Connected to MongoDB");
+  } catch (err) {
+    console.error(`MongoDB bağlantısı kurulurken hata oluştu: ${err}`);
+  }
+}
+connectToMongoDB().catch(console.dir);
+
+
+app.post("/saveflights", async (req, res) => {
+  const flightData = req.body;
+
+  try {
+    const database = client.db(dbName);
+    const collection = database.collection(collectionName);
+
+    const insertResult = await collection.insertOne(flightData);
+    res.status(201).send(`Flight data inserted with id: ${insertResult.insertedId}`);
+  } catch (err) {
+    console.error(`Error inserting flight data: ${err}`);
+    res.status(500).send("Error inserting flight data");
+  }
+});
 
 
 app.get("/flights/sort=:sorT&start=:start&end=:end&to=:to", async (req, res) => {
