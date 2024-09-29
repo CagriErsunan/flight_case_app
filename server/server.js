@@ -4,7 +4,7 @@ import axios from "axios";
 import { MongoClient, ServerApiVersion } from "mongodb";
 
 
-const uri = "mongodb+srv://cagriersunan:2001Cagers@cluster0.xdpfz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = "";
 
 const corsOptions = {
   origin: "http://localhost:3000",
