@@ -85,7 +85,7 @@ const FlightToBook = ({flight, destinations, startDate, endDate}) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8080/saveflights", flight);
+      const response = await axios.post("http://localhost:8080/saveflights", {name: flight.flightName, number: flight.flightNumber, scheduleTime: flight.scheduleTime, airline: airline, location: location.join('-')});
       console.log(response.data);
       setalertForSaving("Rezervasyonunuz başarıyla yapıldı.")
       handleOpen();

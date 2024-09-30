@@ -143,10 +143,6 @@ const ShowFlights = ({onDatesChange, FlightDirection, onFlightsFetched}) => {
                   {destination[1]}
                 </MenuItem>
               ))}
-
-
-
-
               </CustomSelector>
             </FormControl>
           </Box>

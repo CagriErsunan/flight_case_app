@@ -38,19 +38,28 @@ async function connectToMongoDB() {
 }
 connectToMongoDB().catch(console.dir);
 
+const database = client.db(dbName);
+const collection = database.collection(collectionName);
 
 app.post("/saveflights", async (req, res) => {
   const flightData = req.body;
 
   try {
-    const database = client.db(dbName);
-    const collection = database.collection(collectionName);
 
     const insertResult = await collection.insertOne(flightData);
     res.status(201).send(`Flight data inserted with id: ${insertResult.insertedId}`);
   } catch (err) {
     console.error(`Error inserting flight data: ${err}`);
     res.status(500).send("Error inserting flight data");
+  }
+});
+app.get("/myflights", async (req, res) => {
+  try {
+    const flights = await collection.find({}).toArray();
+    res.status(200).json(flights);
+  } catch (err) {
+    console.error(`Error retrieving flight data: ${err}`);
+    res.status(500).send("Error retrieving flight data");
   }
 });
 
