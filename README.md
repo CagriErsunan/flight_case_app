@@ -2,7 +2,7 @@
 
 MY FLIGHTS butonuna tıklayarak route ile uçuşlarım sayfasına yönlendirilebilirsiniz.
 
-server/server.js dosyasında uri değişkenine mongoDB uri'ınızı girmeniz gerekmekte. Güvenlik sebebiyle kendi uri'yımı paylaşamam.
+server/server.js dosyasında uri değişkenine mongoDB uri'ınızı girmeniz gerekmekte. Güvenlik sebebiyle kendi uri'ımı paylaşamam.
 
 API anahtarları bana aittir fakat projede gizlemedim isterseniz kendi auth parametrelerinizle de kullanabilirsiniz.
 
