@@ -71,6 +71,7 @@ app.get("/flights/sort=:sorT&start=:start&end=:end&to=:to", async (req, res) => 
   } else {
     route = '';
   }
+  console.log(route);
   const sorT = req.params.sorT;
   const start = req.params.start;
   const end = req.params.end;

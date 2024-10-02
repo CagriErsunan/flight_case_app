@@ -5,7 +5,8 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 import { useState, useEffect } from 'react';
 import PlaneIcon from "../assets/PlaneBlackLogo.svg";
 import {ReactComponent as CalendarIcon} from '../assets/CalendarLogo.svg';
@@ -45,25 +46,30 @@ const buttonStylesAlt = {
   height: '2.5rem'
 };
 
-const ShowFlights = ({onDatesChange, FlightDirection, onFlightsFetched}) => {
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+
+const ShowFlights = ({onFlightsFetched}) => {
   const today = new Date();
   const todayDate = today.toISOString();
   //console.log(todayDate);
+
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [destinations, setDestinations] =  useState([]);
   const [direction, setDirection] = React.useState('');
 
-  const handleStartDateChange = (newValue) => {
-    setStartDate(newValue);
-    onDatesChange(newValue, endDate);
-  };
+  const [destinations, setDestinations] =  useState([]);
 
-  const handleEndDateChange = (newValue) => {
-    setEndDate(newValue);
-    onDatesChange(startDate, newValue);
-  };
+  function ikiBasamaklıGün(gün) {
+    return gün.toString().padStart(2, '0');
+  }
 
+
+  const sendSearchParams = () => {
+    console.log(`${startDate.$y}-${startDate.$M+1}-${ikiBasamaklıGün(startDate.$D)}`, endDate, direction);
+    onFlightsFetched({startDate: `${startDate.$y}-${startDate.$M+1}-${ikiBasamaklıGün(startDate.$D)}`, endDate: `${endDate.$y}-${endDate.$M+1}-${ikiBasamaklıGün(endDate.$D)}`, direction: direction});
+  }
 
   useEffect(() => {
     const fetchDestData = async () => {
@@ -79,27 +85,7 @@ const ShowFlights = ({onDatesChange, FlightDirection, onFlightsFetched}) => {
     fetchDestData();
   }, []);
 
-  const handleFetchFlights = async () => {
 
-    try {
-      const response = await axios.get(`http://localhost:8080/flights/sort=%2BscheduleDate&start=${startDate.toISOString().substring(0,10)}&end=${endDate.toISOString().substring(0,10)}&to=${direction}`);
-      onFlightsFetched(response.data);
-    } catch (error) {
-      console.error('Error fetching flights:', error);
-    }
-  };
-
-
-
-  const handleChange = (event) => {
-    setDirection(event.target.value);
-    FlightDirection(direction)
-  };
-
-
-  const findFlight = (a) => {
-
-  }
 
   return (
     <Stack width={'93%'}  gap={3} p={3} pr={4} sx={{background:'#FFF', borderRadius: '25px', boxShadow:'0px 5px 5.8px 0px   rgba(0, 0, 0, 0.20)'}}>
@@ -152,6 +138,7 @@ const ShowFlights = ({onDatesChange, FlightDirection, onFlightsFetched}) => {
               <DatePicker
                 value={startDate} onChange={(newValue) => setStartDate(newValue)}
                 views={['year', 'month', 'day']}
+                timezone={'Europe/Istanbul'}
                 slotProps={{
                   inputAdornment:{
                     position:'start'
@@ -170,6 +157,7 @@ const ShowFlights = ({onDatesChange, FlightDirection, onFlightsFetched}) => {
               <DatePicker
                 value={endDate} onChange={(newValue) => setEndDate(newValue)}
                 views={['year', 'month', 'day']}
+                timezone={'Europe/Istanbul'}
                 slotProps={{
                   inputAdornment:{
                     position:'start'
@@ -191,7 +179,7 @@ const ShowFlights = ({onDatesChange, FlightDirection, onFlightsFetched}) => {
       </Stack>
 
       <Box width={'120px'}>
-        <Button onClick={handleFetchFlights} variant="contained" sx={{backgroundColor:'#4A1B96', borderRadius:'5px'}} width={"2px"}>Show Flights</Button>
+        <Button onClick={sendSearchParams} variant="contained" sx={{backgroundColor:'#4A1B96', borderRadius:'5px'}} width={"2px"}>Show Flights</Button>
       </Box>
 
     </Stack>

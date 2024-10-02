@@ -59,7 +59,7 @@ const FlightToBook = ({flight, destinations, startDate, endDate}) => {
       setArrivalTime(time);
     }
   }, [destinations, flight.estimatedLandingTime]);
-  console.log(typeof(flight.scheduleDate));
+  //console.log(typeof(flight.scheduleDate));
 
 
   useEffect(() => {
@@ -71,14 +71,14 @@ const FlightToBook = ({flight, destinations, startDate, endDate}) => {
           withCredentials: true, // CORS ile birlikte çalışması için gerekli
         });
         setAirline(response.data);
-        console.log(airline);
+        //console.log(airline);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
 
     fetchAirlineData();
-  }, []);
+  }, [flight.prefixIATA]);
 
 
 
@@ -87,7 +87,7 @@ const FlightToBook = ({flight, destinations, startDate, endDate}) => {
     try {
       const response = await axios.post("http://localhost:8080/saveflights", {name: flight.flightName, number: flight.flightNumber, scheduleTime: flight.scheduleTime, airline: airline, location: location.join('-')});
       console.log(response.data);
-      setalertForSaving("Rezervasyonunuz başarıyla yapıldı.")
+      setalertForSaving("Rezervasyonunuz başarıyla yapıldı.");
       handleOpen();
     } catch (error) {
       console.error("Error saving flight data:", error);
